@@ -5,4 +5,4 @@ repository for complete details.
 
 from boilerpy3 import document, extractors, filters, parser
 
-__all__ = ['document', 'extractors', 'filters', 'parser']
+__all__ = ["document", "extractors", "filters", "parser"]
