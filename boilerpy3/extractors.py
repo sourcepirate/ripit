@@ -4,9 +4,8 @@ repository for complete details.
 """
 
 import re
-import urllib.error
-import urllib.parse
-import urllib.request
+
+import requests
 from logging import getLogger
 from typing import Union
 
@@ -61,11 +60,10 @@ class Extractor:
             return text_file.read()
 
     def read_from_url(self, url: str) -> str:
-        with urllib.request.urlopen(url) as url_obj:
-            text = url_obj.read()
-            encoding = self.get_url_encoding(url_obj)
-
+        response = requests.get(url)
+        encoding = self.get_url_encoding(response)
         try:
+            text = response.content
             text = text.decode(encoding)
         except UnicodeDecodeError:
             pass
@@ -73,7 +71,7 @@ class Extractor:
 
     def get_url_encoding(self, f) -> str:
         try:
-            return f.headers["content-type"].split("charset=")[1].split(";")[0]
+            return f.encoding
         except:
             return "utf8"
 

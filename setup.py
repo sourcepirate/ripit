@@ -20,6 +20,9 @@ setup(
             'text extraction',
             'full text extraction'
         ],
+        install_requires=[
+            "requests"
+        ],
         classifiers=[
             'Development Status :: 4 - Beta',
             'Topic :: Utilities',
@@ -28,6 +31,7 @@ setup(
             'Programming Language :: Python :: 3.6',
             'Programming Language :: Python :: 3.7'
         ],
+        test_suite="tests",
         url='https://github.com/jmriebold/BoilerPy3',
         packages=[
             'boilerpy3'
