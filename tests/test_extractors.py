@@ -1,5 +1,8 @@
+import os
 from boilerpy3.document import DefaultLabels, TextBlock
 from boilerpy3.extractors import ArticleExtractor, Extractor
+
+TEST_FILE = os.path.join(os.path.dirname(__file__), "test.html")
 
 extractor = Extractor(None)
 default_words = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec fermentum tincidunt magna, eu " \
@@ -173,7 +176,7 @@ By Sarah Wells, Technical Director for Operations and Reliability, Financial Tim
 Watch Video
     """
     
-    with open('test.html') as html_file:
+    with open(TEST_FILE) as html_file:
         html = html_file.read()
     extractor = ArticleExtractor()
     extracted_text = extractor.get_content(html)
