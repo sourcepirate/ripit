@@ -39,9 +39,7 @@ class HTMLBoilerpipeMarker:
     ]
 
     def __init__(self, remove_elements=None, allowed_attributes=None) -> None:
-        self.TA_IGNORABLE_ELEMENTS = (
-            remove_elements or self.TA_IGNORABLE_ELEMENTS
-        )
+        self.TA_IGNORABLE_ELEMENTS = remove_elements or self.TA_IGNORABLE_ELEMENTS
         self.ALLOWED_ATTRIBUTES = allowed_attributes or self.ALLOWED_ATTRIBUTES
 
     def process(self, doc: TextDocument, is_: str) -> str:

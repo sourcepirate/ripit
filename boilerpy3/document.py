@@ -78,12 +78,8 @@ class TextBlock:
             self.text = ""
         self.text = f"{self.text}\n{next_text_block.text}"
         self.num_words += next_text_block.num_words
-        self.num_words_in_anchor_text += (
-            next_text_block.num_words_in_anchor_text
-        )
-        self.num_words_in_wrapped_lines += (
-            next_text_block.num_words_in_wrapped_lines
-        )
+        self.num_words_in_anchor_text += next_text_block.num_words_in_anchor_text
+        self.num_words_in_wrapped_lines += next_text_block.num_words_in_wrapped_lines
         self.num_wrapped_lines += next_text_block.num_wrapped_lines
         self.offset_blocks_start = min(
             self.offset_blocks_start, next_text_block.offset_blocks_start
@@ -184,18 +180,16 @@ class TextDocument:
     def content(self) -> str:
         """
         Returns the TextDocument's content.
-        
+
         :return: The content text.
         """
 
         return self.get_text(True, False)
 
-    def get_text(
-        self, include_content: bool, include_non_content: bool
-    ) -> str:
+    def get_text(self, include_content: bool, include_non_content: bool) -> str:
         """
         Returns the TextDocument's content, non-content or both.
-        
+
         :param include_content: Whether to include TextBlocks marked as "content".
         :param include_non_content: Whether to include TextBlocks marked as "non-content".
         :return: The text.
@@ -236,7 +230,7 @@ class TextDocumentStatistics:
     def __init__(self, doc: TextDocument, content_only: bool) -> None:
         """
         Computes statistics on a given TextDocument.
-        
+
         :param doc: The TextDocument.
         :param content_only: if true then o
         """
@@ -252,7 +246,7 @@ class TextDocumentStatistics:
     def avg_num_words(self) -> float:
         """
         Returns the average number of words at block-level (= overall number of words divided by the number of blocks).
-        
+
         :return: Average
         """
 

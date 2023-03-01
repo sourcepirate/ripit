@@ -29,9 +29,7 @@ class TagAction:
     ) -> bool:
         return False
 
-    def end(
-        self, content_handler: "BoilerpipeBaseParser", tag_name: str
-    ) -> bool:
+    def end(self, content_handler: "BoilerpipeBaseParser", tag_name: str) -> bool:
         return False
 
     def changes_tag_level(self) -> bool:
@@ -52,9 +50,7 @@ class IgnorableElementTagAction(TagAction):
         content_handler.in_ignorable_element += 1
         return True
 
-    def end(
-        self, content_handler: "BoilerpipeBaseParser", tag_name: str
-    ) -> bool:
+    def end(self, content_handler: "BoilerpipeBaseParser", tag_name: str) -> bool:
         content_handler.in_ignorable_element -= 1
         return True
 
@@ -66,7 +62,7 @@ class AnchorTextTagAction(TagAction):
     """
     Marks this tag as "anchor" (this should usually only be set for the <code>&lt;A&gt;</code> tag). Anchor tags may not
     be nested.
-    
+
     There is a bug in certain versions of NekoHTML which still allows nested tags. If boilerpipe encounters such
     nestings, a SAXException is thrown.
     """
@@ -91,14 +87,9 @@ class AnchorTextTagAction(TagAction):
             content_handler.add_token(SpecialTokens.ANCHOR_TEXT_START)
         return False
 
-    def end(
-        self, content_handler: "BoilerpipeBaseParser", tag_name: str
-    ) -> bool:
+    def end(self, content_handler: "BoilerpipeBaseParser", tag_name: str) -> bool:
         content_handler.in_anchor -= 1
-        if (
-            content_handler.in_anchor == 0
-            and content_handler.in_ignorable_element == 0
-        ):
+        if content_handler.in_anchor == 0 and content_handler.in_ignorable_element == 0:
             content_handler.add_token(SpecialTokens.ANCHOR_TEXT_END)
         return False
 
@@ -121,9 +112,7 @@ class BodyTagAction(TagAction):
         content_handler.in_body += 1
         return False
 
-    def end(
-        self, content_handler: "BoilerpipeBaseParser", tag_name: str
-    ) -> bool:
+    def end(self, content_handler: "BoilerpipeBaseParser", tag_name: str) -> bool:
         content_handler.flush_block()
         content_handler.in_body -= 1
         return False
@@ -146,9 +135,7 @@ class InlineWhitespaceTagAction(TagAction):
         content_handler.add_whitespace_if_necessary()
         return False
 
-    def end(
-        self, content_handler: "BoilerpipeBaseParser", tag_name: str
-    ) -> bool:
+    def end(self, content_handler: "BoilerpipeBaseParser", tag_name: str) -> bool:
         content_handler.add_whitespace_if_necessary()
         return False
 
@@ -169,9 +156,7 @@ class InlineTagAction(TagAction):
     ):
         return False
 
-    def end(
-        self, content_handler: "BoilerpipeBaseParser", tag_name: str
-    ) -> bool:
+    def end(self, content_handler: "BoilerpipeBaseParser", tag_name: str) -> bool:
         return False
 
     def changes_tag_level(self) -> bool:
@@ -191,9 +176,7 @@ class BlockTagAction(TagAction):
     ) -> bool:
         return True
 
-    def end(
-        self, content_handler: "BoilerpipeBaseParser", tag_name: str
-    ) -> bool:
+    def end(self, content_handler: "BoilerpipeBaseParser", tag_name: str) -> bool:
         return True
 
     def changes_tag_level(self) -> bool:
@@ -240,9 +223,7 @@ class FontTagAction(TagAction):
         content_handler.font_size_stack.append(size)
         return False
 
-    def end(
-        self, content_handler: "BoilerpipeBaseParser", tag_name: str
-    ) -> bool:
+    def end(self, content_handler: "BoilerpipeBaseParser", tag_name: str) -> bool:
         content_handler.font_size_stack.pop()
         return False
 
@@ -269,9 +250,7 @@ class InlineTagLabelAction(TagAction):
         content_handler.add_label_action(self.action)
         return False
 
-    def end(
-        self, content_handler: "BoilerpipeBaseParser", tag_name: str
-    ) -> bool:
+    def end(self, content_handler: "BoilerpipeBaseParser", tag_name: str) -> bool:
         content_handler.add_whitespace_if_necessary()
         return False
 
@@ -297,9 +276,7 @@ class BlockTagLabelAction(TagAction):
         content_handler.add_label_action(self.action)
         return True
 
-    def end(
-        self, content_handler: "BoilerpipeBaseParser", tag_name: str
-    ) -> bool:
+    def end(self, content_handler: "BoilerpipeBaseParser", tag_name: str) -> bool:
         return True
 
     def changes_tag_level(self) -> bool:
@@ -322,17 +299,14 @@ class Chained(TagAction):
             content_handler, tag_name, attrs
         ) | self.tag_action2.start(content_handler, tag_name, attrs)
 
-    def end(
-        self, content_handler: "BoilerpipeBaseParser", tag_name: str
-    ) -> bool:
-        return self.tag_action1.end(
+    def end(self, content_handler: "BoilerpipeBaseParser", tag_name: str) -> bool:
+        return self.tag_action1.end(content_handler, tag_name) | self.tag_action2.end(
             content_handler, tag_name
-        ) | self.tag_action2.end(content_handler, tag_name)
+        )
 
     def changes_tag_level(self) -> bool:
         return (
-            self.tag_action1.changes_tag_level()
-            or self.tag_action2.changes_tag_level()
+            self.tag_action1.changes_tag_level() or self.tag_action2.changes_tag_level()
         )
 
 
@@ -376,9 +350,7 @@ class MarkupTagAction(TagAction):
         self.label_stack.append(labels)
         return self.is_block_level
 
-    def end(
-        self, content_handler: "BoilerpipeBaseParser", tag_name: str
-    ) -> bool:
+    def end(self, content_handler: "BoilerpipeBaseParser", tag_name: str) -> bool:
         self.label_stack.pop()
         return self.is_block_level
 
@@ -498,7 +470,7 @@ class BoilerpipeBaseParser:
     def __init__(self, tag_actions: Dict[str, TagAction] = None) -> None:
         """
         Constructs a BoilerpipeHTMLContentHandler using the given TagActionMap.
-        
+
         :param tag_actions: The TagActionMap to use, e.g. DefaultTagActionMap.
         """
 
@@ -721,7 +693,7 @@ class BoilerpipeBaseParser:
     def to_text_document(self) -> TextDocument:
         """
         Returns a TextDocument containing the extracted TextBlocks. NOTE: Only call this after parsing.
-        
+
         :return: The TextDocument
         """
 

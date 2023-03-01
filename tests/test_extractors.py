@@ -5,18 +5,20 @@ from boilerpy3.extractors import ArticleExtractor, Extractor
 TEST_FILE = os.path.join(os.path.dirname(__file__), "test.html")
 
 extractor = Extractor(None)
-default_words = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec fermentum tincidunt magna, eu " \
-                "pulvinar mauris dapibus pharetra. In varius, nisl a rutrum porta, sem sem semper lacus, et varius " \
-                "urna tellus vel lorem. Nullam urna eros, luctus eget blandit ac, imperdiet feugiat ipsum. Donec " \
-                "laoreet tristique mi a bibendum. Sed pretium bibendum scelerisque. Mauris id pellentesque turpis. " \
-                "Mauris porta adipiscing massa, quis tempus dui pharetra ac. Morbi lacus mauris, feugiat ac tempor " \
-                "ut, congue tincidunt risus. Pellentesque tincidunt adipiscing elit, in fringilla enim scelerisque " \
-                "vel. Nulla facilisi. ".split(' ')
+default_words = (
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec fermentum tincidunt magna, eu "
+    "pulvinar mauris dapibus pharetra. In varius, nisl a rutrum porta, sem sem semper lacus, et varius "
+    "urna tellus vel lorem. Nullam urna eros, luctus eget blandit ac, imperdiet feugiat ipsum. Donec "
+    "laoreet tristique mi a bibendum. Sed pretium bibendum scelerisque. Mauris id pellentesque turpis. "
+    "Mauris porta adipiscing massa, quis tempus dui pharetra ac. Morbi lacus mauris, feugiat ac tempor "
+    "ut, congue tincidunt risus. Pellentesque tincidunt adipiscing elit, in fringilla enim scelerisque "
+    "vel. Nulla facilisi. ".split(" ")
+)
 
 
 def content_item(s):
     if isinstance(s, int):
-        return ' '.join(default_words[:s])
+        return " ".join(default_words[:s])
     else:
         return s
 
@@ -26,7 +28,7 @@ def make_content(str_arr):
 
 
 def make_doc_2(template, content_arr):
-    template_arr = template.split('*')
+    template_arr = template.split("*")
     s = ""
     for i, j in zip(template_arr[:-1], content_arr):
         s += i + j
@@ -39,7 +41,7 @@ def test_blocks():
     template = "<html><body><p>*</p><div>*<p>*</p>*</div></body></html>"
     content = make_content([4, 5, 6, 7])
     doc = make_doc_2(template, content)
-    
+
     blocks = doc.text_blocks
     text_arr = [block.text for block in blocks]
     num_words = [block.num_words for block in blocks]
@@ -51,7 +53,7 @@ def test_anchor():
     template = "<html><body><p>*</p><div>*<a href='half.html'>*</a></div><a href='full.html'><p>*</p></a></body></html>"
     content = make_content([6, "end with space ", 3, 6])
     doc = make_doc_2(template, content)
-    
+
     blocks = doc.text_blocks
     text_arr = [block.text for block in blocks]
     density_arr = [block.link_density for block in blocks]
@@ -63,14 +65,22 @@ def test_anchor():
 
 def test_title():
     title_text = "THIS IS TITLE"
-    s = "<html><head><title>" + title_text + "</title></head><body><p>THIS IS CONTENT</p></body></html>"
+    s = (
+        "<html><head><title>"
+        + title_text
+        + "</title></head><body><p>THIS IS CONTENT</p></body></html>"
+    )
     doc = extractor.parse_doc(s)
     assert doc.title == title_text
 
 
 def test_body():
     body_text = "THIS IS CONTENT"
-    s = "<html><head><p>NOT IN BODY</p></head><body><p>" + body_text + "</p></body></html>"
+    s = (
+        "<html><head><p>NOT IN BODY</p></head><body><p>"
+        + body_text
+        + "</p></body></html>"
+    )
     doc = extractor.parse_doc(s)
     text_arr = [block.text for block in doc.text_blocks]
     assert text_arr == [body_text]
@@ -78,9 +88,9 @@ def test_body():
 
 def test_inline():
     template = "<html><body><div><h1>*</h1><h4>*</h4></div><div><span>*</span><b>*</b></div></body></html>"
-    content = ['AA', 'BB', 'CC', 'DD']
+    content = ["AA", "BB", "CC", "DD"]
     doc = make_doc_2(template, content)
-    
+
     blocks = doc.text_blocks
     text_arr = [block.text for block in blocks]
     assert text_arr == [content[0], content[1], content[2] + content[3]]
@@ -90,7 +100,7 @@ def test_ignorable():
     template = "<html><body><p>*</p><option><p>*</p></option></body></html>"
     content = make_content([10, 12])
     doc = make_doc_2(template, content)
-    
+
     blocks = doc.text_blocks
     text_arr = [block.text for block in blocks]
     assert text_arr == [content[0]]
@@ -104,17 +114,24 @@ def test_textDensity():
     template = "<html><body><p>*</p><p>*</p></body></html>"
     content = make_content([80, "one, !!! two"])
     doc = make_doc_2(template, content)
-    
+
     blocks = doc.text_blocks
-    num_arr = [[block.num_words, block.num_words_in_wrapped_lines, block.num_wrapped_lines, block.text_density] for
-               block in blocks]
-    
+    num_arr = [
+        [
+            block.num_words,
+            block.num_words_in_wrapped_lines,
+            block.num_wrapped_lines,
+            block.text_density,
+        ]
+        for block in blocks
+    ]
+
     # exact values are unknown, approximate value range to check
     assert blocks[0].num_words == 80
     assert_range(blocks[0].num_words_in_wrapped_lines, 60, 80)
     assert_range(blocks[0].num_wrapped_lines, 4, 7)
     assert_range(blocks[0].text_density, 8, 16)
-    
+
     assert num_arr[1] == [2, 2, 1, 2]
 
 
@@ -122,7 +139,7 @@ def test_block_idxs():
     template = "<html><body><p>*  </p>  <p> * </p><p>*  </p><p>*  </p></body></html>"
     content = make_content([11, 12, 13, 14])
     doc = make_doc_2(template, content)
-    
+
     blocks = doc.text_blocks
     idx_arr = [[block.offset_blocks_start, block.offset_blocks_end] for block in blocks]
     assert idx_arr == [[0, 0], [1, 1], [2, 2], [3, 3]]
@@ -132,7 +149,7 @@ def test_tag_level():
     template = "<html><body><div><p><span><a href='x.html'>*</a></span></p>*</div></body></html>"
     content = make_content([5, 6])
     doc = make_doc_2(template, content)
-    
+
     blocks = doc.text_blocks
     level_arr = [block.tag_level for block in blocks]
     assert level_arr == [5, 3]
@@ -149,7 +166,10 @@ def test_merge():
     assert block1.num_words_in_anchor_text == 3
     assert round(abs(block1.link_density - 1.0 / 3.0), 7) == 0
     assert block1.text_density == 3
-    assert block1.labels == {DefaultLabels.MIGHT_BE_CONTENT, DefaultLabels.ARTICLE_METADATA}
+    assert block1.labels == {
+        DefaultLabels.MIGHT_BE_CONTENT,
+        DefaultLabels.ARTICLE_METADATA,
+    }
     assert block1.offset_blocks_start == 0
     assert block1.offset_blocks_end == 1
 
@@ -175,7 +195,7 @@ The Challenges of Migrating 150+ Microservices to Kubernetes
 By Sarah Wells, Technical Director for Operations and Reliability, Financial Times
 Watch Video
     """
-    
+
     with open(TEST_FILE) as html_file:
         html = html_file.read()
     extractor = ArticleExtractor()

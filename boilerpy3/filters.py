@@ -188,9 +188,7 @@ class MinClauseWordsFilter(BoilerpipeFilter):
     ) -> None:
         super(MinClauseWordsFilter, self).__init__()
         self.min_words = min_words
-        self.accept_clauses_without_delimiter = (
-            accept_clauses_without_delimiter
-        )
+        self.accept_clauses_without_delimiter = accept_clauses_without_delimiter
 
     def process(self, doc: TextDocument) -> bool:
         changes = False
@@ -260,14 +258,13 @@ class SplitParagraphBlocksFilter(BoilerpipeFilter):
 class SurroundingToContentFilter(BoilerpipeFilter):
     def __init__(
         self,
-        condition: callable = lambda tb: tb.linkDensity == 0
-        and tb.num_words > 6,
+        condition: callable = lambda tb: tb.linkDensity == 0 and tb.num_words > 6,
     ) -> None:
         """
         this is now default when no arguments are passed
-        
+
         INSTANCE_TEXT = SurroundingToContentFilter(TextBlockCondition())
-        
+
         ctor - condition is an function for an additional condition to determine if it can be made content
         """
 
@@ -303,7 +300,7 @@ class SurroundingToContentFilter(BoilerpipeFilter):
 class LabelToBoilerplateFilter(BoilerpipeFilter):
     """
     Marks all blocks that contain a given label as "boilerplate".
-    
+
     INSTANCE_STRICTLY_NOT_CONTENT = LabelToBoilerplateFilter(DefaultLabels.STRICTLY_NOT_CONTENT)
     """
 
@@ -314,9 +311,7 @@ class LabelToBoilerplateFilter(BoilerpipeFilter):
     def process(self, doc: TextDocument) -> bool:
         changes = False
         for tb in doc.text_blocks:
-            if tb.is_content and any(
-                tb.has_label(label) for label in self.labels
-            ):
+            if tb.is_content and any(tb.has_label(label) for label in self.labels):
                 tb.is_content = False
                 changes = True
         return changes
@@ -334,9 +329,7 @@ class LabelToContentFilter(BoilerpipeFilter):
     def process(self, doc: TextDocument) -> bool:
         changes = False
         for tb in doc.text_blocks:
-            if not tb.is_content and any(
-                tb.has_label(label) for label in self.labels
-            ):
+            if not tb.is_content and any(tb.has_label(label) for label in self.labels):
                 tb.is_content = True
                 changes = True
         return changes
@@ -368,9 +361,7 @@ class SimpleBlockFusionProcessor(BoilerpipeFilter):
                 prev_block = block
 
         if changes:
-            doc.text_blocks = self.subtract_blocks(
-                text_blocks, blocks_to_remove
-            )
+            doc.text_blocks = self.subtract_blocks(text_blocks, blocks_to_remove)
 
         return changes
 
@@ -400,9 +391,7 @@ class ContentFusion(BoilerpipeFilter):
                     changes = True
                 else:
                     prev_block = block
-                text_blocks = self.subtract_blocks(
-                    text_blocks, blocks_to_remove
-                )
+                text_blocks = self.subtract_blocks(text_blocks, blocks_to_remove)
         if changes:
             doc.text_blocks = text_blocks
 
@@ -417,7 +406,7 @@ class LabelFusion(BoilerpipeFilter):
     def __init__(self, label_prefix: str = "") -> None:
         """
         Creates a new LabelFusion instance.
-        
+
         :param label_prefix: The maximum distance in blocks.
         """
 
@@ -440,9 +429,7 @@ class LabelFusion(BoilerpipeFilter):
                 prev_block = block
 
         if changes:
-            doc.text_blocks = self.subtract_blocks(
-                text_blocks, blocks_to_remove
-            )
+            doc.text_blocks = self.subtract_blocks(text_blocks, blocks_to_remove)
 
         return changes
 
@@ -451,15 +438,11 @@ class LabelFusion(BoilerpipeFilter):
             return False
 
         # NOTE: Should blocks be merged if neither of them have labels???  i.e. labels1==labels2==empty set
-        return self.markup_labels_only(labels1) == self.markup_labels_only(
-            labels2
-        )
+        return self.markup_labels_only(labels1) == self.markup_labels_only(labels2)
 
     def markup_labels_only(self, labels: List[str]) -> set:
         return {
-            label
-            for label in labels
-            if label.startswith(DefaultLabels.MARKUP_PREFIX)
+            label for label in labels if label.startswith(DefaultLabels.MARKUP_PREFIX)
         }
 
 
@@ -467,7 +450,7 @@ class BlockProximityFusion(BoilerpipeFilter):
     """
     Fuses adjacent blocks if their distance (in blocks) does not exceed a certain limit. This probably makes sense only
     in cases where an upstream filter already has removed some blocks.
-    
+
     MAX_DISTANCE_1 = BlockProximityFusion(1, False, False)
     MAX_DISTANCE_1_SAME_TAGLEVEL = BlockProximityFusion(1, False, True)
     MAX_DISTANCE_1_CONTENT_ONLY = BlockProximityFusion(1, True, False)
@@ -482,7 +465,7 @@ class BlockProximityFusion(BoilerpipeFilter):
     ) -> None:
         """
         Creates a new BlockProximityFusion instance.
-        
+
         :param max_blocks_distance: The maximum distance in blocks.
         :param content_only:
         :param same_tag_level_only:
@@ -516,18 +499,13 @@ class BlockProximityFusion(BoilerpipeFilter):
             if not block.is_content:
                 prev_block = block
                 continue
-            diff_blocks = (
-                block.offset_blocks_start - prev_block.offset_blocks_end - 1
-            )
+            diff_blocks = block.offset_blocks_start - prev_block.offset_blocks_end - 1
             if diff_blocks <= self.max_blocks_distance:
                 ok = True
                 if self.content_only:
                     if not prev_block.is_content or not block.is_content:
                         ok = False
-                if (
-                    self.same_tag_level_only
-                    and prev_block.tag_level != block.tag_level
-                ):
+                if self.same_tag_level_only and prev_block.tag_level != block.tag_level:
                     ok = False
                 if ok:
                     prev_block.merge_next(block)
@@ -540,9 +518,7 @@ class BlockProximityFusion(BoilerpipeFilter):
                 prev_block = block
 
         if len(blocks_to_remove) > 0:
-            doc.text_blocks = self.subtract_blocks(
-                text_blocks, blocks_to_remove
-            )
+            doc.text_blocks = self.subtract_blocks(text_blocks, blocks_to_remove)
             changes = True
 
         return changes
@@ -555,7 +531,7 @@ class KeepLargestBlockFilter(BoilerpipeFilter):
     DefaultLabels.
 
     Note that, by default, only TextBlocks marked as "content" are taken into consideration.
-    
+
     INSTANCE = KeepLargestBlockFilter(False)
     INSTANCE_EXPAND_TO_SAME_TAGLEVEL = KeepLargestBlockFilter(True)
     """
@@ -610,7 +586,7 @@ class ExpandTitleToContentFilter(BoilerpipeFilter):
     """
     Marks all TextBlocks "content" which are between the headline and the part that has already been marked
     content, if they are marked DefaultLabels#MIGHT_BE_CONTENT.
-    
+
     This filter is quite specific to the news domain.
     """
 
@@ -671,7 +647,7 @@ class AddPrecedingLabelsFilter(BoilerpipeFilter):
     def __init__(self, label_prefix: str = "") -> None:
         """
         Creates a new AddPrecedingLabelsFilter instance.
-        
+
         INSTANCE = AddPrecedingLabelsFilter("")
         INSTANCE_PRE = AddPrecedingLabelsFilter("^")
         """
@@ -712,9 +688,7 @@ class DocumentTitleMatchClassifier(BoilerpipeFilter):
     ]
     WORD_REGEX = re.compile(r"\w+", re.UNICODE)
 
-    def __init__(
-        self, title: Union[str, None], use_doc_title: bool = False
-    ) -> None:
+    def __init__(self, title: Union[str, None], use_doc_title: bool = False) -> None:
         super(DocumentTitleMatchClassifier, self).__init__()
         self.use_doc_title = use_doc_title
         if use_doc_title:
@@ -767,10 +741,7 @@ class DocumentTitleMatchClassifier(BoilerpipeFilter):
         changes = False
         for tb in doc.text_blocks:
             text = tb.text.strip().lower()
-            if any(
-                candidate.lower() == text
-                for candidate in self.potential_titles
-            ):
+            if any(candidate.lower() == text for candidate in self.potential_titles):
                 tb.add_label(DefaultLabels.TITLE)
                 changes = True
         return changes
@@ -787,9 +758,7 @@ class HeuristicFilterBase(BoilerpipeFilter):
     Base class for some heuristics that are used by boilerpipe filters.
     """
 
-    def get_num_full_text_words(
-        self, tb: TextBlock, min_text_density: int = 9
-    ):
+    def get_num_full_text_words(self, tb: TextBlock, min_text_density: int = 9):
         if tb.text_density >= min_text_density:
             return tb.num_words
         else:
@@ -808,10 +777,7 @@ class MinFulltextWordsFilter(HeuristicFilterBase):
     def process(self, doc: TextDocument) -> bool:
         changes = False
         for tb in doc.text_blocks:
-            if (
-                tb.is_content
-                and self.get_num_full_text_words(tb) < self.min_words
-            ):
+            if tb.is_content and self.get_num_full_text_words(tb) < self.min_words:
                 tb.is_content = False
                 changes = True
         return changes
@@ -886,7 +852,7 @@ class IgnoreBlocksAfterContentFromEndFilter(HeuristicFilterBase):
     """
     Marks all blocks as "non-content" that occur after blocks that have been marked DefaultLabels#INDICATES_END_OF_TEXT,
     and after any content block. This filter can be used in conjunction with an upstream TerminatingBlocksFinder.
-    
+
     See TerminatingBlocksFinder
     """
 
@@ -943,12 +909,8 @@ class TerminatingBlocksFinder(BoilerpipeFilter):
 
             if (
                 text_lc.startswith("comments")
-                or self.starts_with_number(
-                    text_lc, " comments", " users responded in"
-                )
-                or any(
-                    text_lc.startswith(matchStr) for matchStr in startmatches
-                )
+                or self.starts_with_number(text_lc, " comments", " users responded in")
+                or any(text_lc.startswith(matchStr) for matchStr in startmatches)
                 or any(matchStr in text_lc for matchStr in inmatches)
                 or text_lc == eqmatch
             ):
@@ -960,7 +922,7 @@ class TerminatingBlocksFinder(BoilerpipeFilter):
     def starts_with_number(self, text: str, *match_str_arr: str):
         """
         Checks whether the given text t starts with a sequence of digits, followed by one of the given strings.
-        
+
         :param text: The text to examine
         :param match_str_arr: Any strings that may follow the digits.
         :return: true if at least one combination matches
@@ -974,9 +936,7 @@ class TerminatingBlocksFinder(BoilerpipeFilter):
         if pos == 0:
             return False
         else:
-            return any(
-                text.startswith(matchStr, pos) for matchStr in match_str_arr
-            )
+            return any(text.startswith(matchStr, pos) for matchStr in match_str_arr)
 
 
 class NumWordsRulesClassifier(BoilerpipeFilter):
