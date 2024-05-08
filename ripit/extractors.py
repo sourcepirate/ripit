@@ -9,10 +9,10 @@ import requests
 from logging import getLogger
 from typing import Union
 
-from boilerpy3 import filters, parser
-from boilerpy3.document import TextDocument
-from boilerpy3.filters import BoilerpipeFilter
-from boilerpy3.marker import HTMLBoilerpipeMarker
+from ripit import filters, parser
+from ripit.document import TextDocument
+from ripit.filters import BoilerpipeFilter
+from ripit.marker import HTMLBoilerpipeMarker
 
 logger = getLogger("boilerpy3")
 

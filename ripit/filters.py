@@ -48,7 +48,7 @@ repository for complete details.
 import re
 from typing import List, Pattern, Union
 
-from boilerpy3.document import DefaultLabels, TextBlock, TextDocument
+from ripit.document import DefaultLabels, TextBlock, TextDocument
 
 
 class BoilerpipeFilter:

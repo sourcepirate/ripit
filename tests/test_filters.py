@@ -1,5 +1,5 @@
-from boilerpy3.document import DefaultLabels, TextBlock, TextDocument
-from boilerpy3.filters import (
+from ripit.document import DefaultLabels, TextBlock, TextDocument
+from ripit.filters import (
     AddPrecedingLabelsFilter,
     ArticleMetadataFilter,
     BlockProximityFusion,

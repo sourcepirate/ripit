@@ -1,5 +1,7 @@
-# BoilerPy3 (Forked)
+# ripit (Forked from BoilerPy3 a beautiful library.)
 
+Original Boilerpy3 was not maintianed. I forked it to add some features changes.
+No changes to license 
 
 ## About
 
@@ -15,13 +17,7 @@ This package is based on [sammyer's](https://github.com/sammyer) [BoilerPy](http
 To install the latest version from PyPI, execute:
 
 ```shell
-pip install boilerpy3
-```
-
-If you'd like to try out any unreleased features you can install directly from GitHub like so:
-
-```shell
-pip install git+https://github.com/jmriebold/BoilerPy
+pip install ripit
 ```
 
 
@@ -30,7 +26,7 @@ pip install git+https://github.com/jmriebold/BoilerPy
 The top-level interfaces are the Extractors. Use the `get_content()` methods to extract the filtered text.
 
 ```python
-from boilerpy3 import extractors
+from ripit import extractors
 
 extractor = extractors.ArticleExtractor()
 
@@ -47,7 +43,7 @@ content = extractor.get_content('<html><body><h1>Example</h1></body></html>')
 Alternatively, use `get_doc()` to return a Boilerpipe document from which you can get more detailed information.
 
 ```python
-from boilerpy3 import extractors
+from ripit import extractors
 
 extractor = extractors.ArticleExtractor()
 

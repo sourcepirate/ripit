@@ -1,6 +1,6 @@
 import os
-from boilerpy3.document import DefaultLabels, TextBlock
-from boilerpy3.extractors import ArticleExtractor, Extractor
+from ripit.document import DefaultLabels, TextBlock
+from ripit.extractors import ArticleExtractor, Extractor
 
 TEST_FILE = os.path.join(os.path.dirname(__file__), "test.html")
 

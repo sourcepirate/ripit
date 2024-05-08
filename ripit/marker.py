@@ -6,8 +6,8 @@ repository for complete details.
 from html import escape
 from xml.sax.xmlreader import AttributesImpl
 
-from boilerpy3.document import TextDocument
-from boilerpy3.parser import BoilerpipeHTMLParser
+from ripit.document import TextDocument
+from ripit.parser import BoilerpipeHTMLParser
 
 
 class AnotherBoilerPipeHTMLParser(BoilerpipeHTMLParser):

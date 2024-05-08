@@ -4,11 +4,11 @@ with open("README.md") as readme_file:
     long_description = readme_file.read()
 
 setup(
-    name="boilerpy3",
-    version="1.0.1",
+    name="ripit",
+    version="1.0.0",
     python_requires=">=3.6",
-    author="John Riebold",
-    author_email="jmriebold@gmail.com",
+    author="sourcepirate",
+    author_email="plasmashadowx@gmail.com",
     license="Apache 2.0",
     description="Python port of Boilerpipe, Boilerplate Removal and Fulltext Extraction from HTML pages",
     long_description=long_description,
@@ -20,7 +20,7 @@ setup(
         "text extraction",
         "full text extraction",
     ],
-    install_requires=["requests"],
+    install_requires=["requests==2.31.0"],
     classifiers=[
         "Development Status :: 4 - Beta",
         "Topic :: Utilities",
@@ -28,8 +28,12 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
     ],
     test_suite="tests",
-    url="https://github.com/jmriebold/BoilerPy3",
-    packages=["boilerpy3"],
+    url="https://github.com/sourcepirate/ripit",
+    packages=["ripit"],
 )

@@ -10,7 +10,7 @@ from typing import Dict, Set
 from xml.sax import ContentHandler
 from xml.sax.xmlreader import AttributesImpl
 
-from boilerpy3.document import DefaultLabels, TextBlock, TextDocument
+from ripit.document import DefaultLabels, TextBlock, TextDocument
 
 logger = getLogger("boilerpy3")
 
