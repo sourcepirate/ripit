@@ -1,6 +1,6 @@
 # ripit (Forked from BoilerPy3 a beautiful library.)
 
-![](https://img.shields.io/pypi/v/scikit-learn)
+![PyPI - Version](https://img.shields.io/pypi/v/ripit)
 [![Updates](https://pyup.io/repos/github/pyupio/pyup/shield.svg)](https://pyup.io/repos/github/pyupio/pyup/)
 ![](https://github.com/sourcepirate/ripit/actions/workflows/test.yml/badge.svg)
 ![](https://github.com/sourcepirate/ripit/actions/workflows/publish.yml/badge.svg)
