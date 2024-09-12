@@ -5,7 +5,7 @@ with open("README.md") as readme_file:
 
 setup(
     name="ripit",
-    version="1.0.0",
+    version="1.0.2",
     python_requires=">=3.6",
     author="sourcepirate",
     author_email="plasmashadowx@gmail.com",
