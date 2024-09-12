@@ -20,7 +20,7 @@ setup(
         "text extraction",
         "full text extraction",
     ],
-    install_requires=["requests==2.31.0"],
+    install_requires=["requests>=2.32.3"],
     classifiers=[
         "Development Status :: 4 - Beta",
         "Topic :: Utilities",
